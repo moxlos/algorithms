@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 31 21:45:56 2022
-
 @author: lefteris
 
 @subject: disease dynamics
