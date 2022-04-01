@@ -1,8 +1,9 @@
 ---
 title: "R Notebook"
 output:
-  html_notebook: default
-  pdf_document: default
+  html_document:
+    keep_md: true
+
 ---
 A model to calculate the optimal number of workers in an 8-hour shift. The workers change shifts either at the beginning of the shift or at the middle, so that at every given shift workers from the current shift and the previous shift are present.
 We know the mean value of the required number of workers, but this requirement is stochastic. We suppose that it follows a Poisson distribution. For example if a certain 4 hour window requires 9 workers, then 
@@ -26,6 +27,7 @@ library(lpSolveAPI)
 library(kableExtra)
 library(lubridate)
 library(stringr)
+options(warn=-1)
 
 DF = data.frame(val = 1:6,
                 dt_start = paste0(as.character(seq(0,20,by=4)),':','00')  ,
@@ -42,13 +44,13 @@ DF %>%
   column_spec(4, background = "red")
 ```
 The variables
-X[i] >= 0, i=1:6 the number of workers
+$X[i] >= 0, i=1:6$ the number of workers
 
 The constraints: The available staff should be more than the effective constraints
-AvailStaff(X,i) >= VaR(RequiredStaff;ChanceCtr),  i=1:6
+$$AvailStaff(X,i) >= VaR(RequiredStaff;ChanceCtr),  i=1:6$$
 
 The objective
-min(sum_i X[i])
+$$min(sum_i X[i])$$
 
 
 
