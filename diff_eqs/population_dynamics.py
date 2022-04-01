@@ -11,10 +11,15 @@ import math
 import matplotlib.pyplot as plt
 
 
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+
 class Logistic:
     """This class defines the Logistic population
-    growth of a population which has a limited size C
-    and a growth rate of nu.
+    growth of a population which has a limited size K
+    and a growth rate of r.
 
     Attributes:
         r    Growth rate of the population
@@ -30,8 +35,8 @@ class Logistic:
 
 class LogisticThres:
     """This class defines the Logistic population
-    growth of a population which has a limited size C
-    and a growth rate of nu.
+    growth of a population which has a limited size K
+    and a growth rate of r.
 
     Attributes:
         r    Growth rate of the population
@@ -46,8 +51,8 @@ class LogisticThres:
     
 class LogisticThresFix:
     """This class defines the Logistic population
-    growth of a population which has a limited size C
-    and a growth rate of nu.
+    growth of a population which has a limited size K
+    and a growth rate of r.
 
     Attributes:
         r    Growth rate of the population
