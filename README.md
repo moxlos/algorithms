@@ -1,3 +1,3 @@
 # algorithms
 - diff_eqs: differential equations and partial diffrential equations
-- : optimisation and simulation
+- sims_opt: optimisation and simulation
