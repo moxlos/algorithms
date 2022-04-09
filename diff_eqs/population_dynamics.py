@@ -77,6 +77,16 @@ class ExplicitEuler:
     def iterate(self,x0,t,dt):
         return x0+dt*self.f(x0,t)
 
+class RK2:
+    """This class defines the Runge-Kutta 2 
+    scheme for the numerical resolution of 
+    a differentiel equation.
+    """
+    def __init__(self,f):
+        self.f = f
+
+    def iterate(self,x0,t,dt):
+        return x0+dt*self.f(x0+dt/2*self.f(x0,t),t+dt/2)
 
 class Integrator:
     """This class defines the Integration  
