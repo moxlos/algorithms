@@ -49,6 +49,64 @@ class SupplyDemand:
     
         prob.solve(pulp.apis.PULP_CBC_CMD(msg=False))
         return prob
+    def get_network(self):
+        prob = self.get_solution()
+        X = {'pl_id' : [],
+             'wr_id' : [],
+            'value' : []}
+        Y = {'pl_id': [],
+             'value' : []}
+        for v in prob.variables():
+            ids = v.name[2:].split("_")
+            if v.name[0] == 'X':
+                X['pl_id'].append(int(ids[0]))
+                X['wr_id'].append(int(ids[1]))
+                X['value'].append(v.varValue)
+            else:
+                Y['pl_id'].append(int(ids[0]))
+                Y['value'].append(v.varValue)
+        
+        X = pd.DataFrame(X)
+        Y = pd.DataFrame(Y)
+        Xfilt = X.loc[X['value']>0].reset_index(drop=True)
+        return(prob, Xfilt, Y)
+    def get_report(self):
+        prob, X, Y = self.get_network()
+
+        X = X.rename(columns = {'value': 'supply'})
+        C_df = pd.DataFrame(self.C)
+        C_df['pl_id'] = range(self.C.shape[0])
+        C_df = pd.melt(C_df, id_vars=['pl_id'])
+        C_df = C_df.rename(columns = {'variable': 'wr_id',
+                                      'value': 'transport_cost'})
+
+        C_df['wr_id'] = C_df['wr_id'].astype('int') 
+
+
+        D_df = pd.DataFrame(
+                {'wr_id': range(self.D.shape[0]),
+                 'demand': self.D}
+            )
+
+        S_df = pd.DataFrame(
+                {'pl_id': range(self.S.shape[0]),
+                 'limit_supply': self.S}
+            )
+
+        c_df = pd.DataFrame(
+                {'pl_id': range(self.c.shape[0]),
+                 'operate_cost': self.c}
+            )
+
+
+        report = X.merge(C_df, left_on=['pl_id','wr_id'], right_on=['pl_id','wr_id'])
+
+        report = report.merge(S_df, left_on='pl_id', right_on='pl_id')
+        report = report.merge(D_df, left_on='wr_id', right_on='wr_id')
+        report = report.merge(c_df, left_on='pl_id', right_on='pl_id')
+        return report
+
+
 
 
 if __name__ == "__main__":
@@ -60,17 +118,7 @@ if __name__ == "__main__":
     df
     
     supp = SupplyDemand(C,D,S,c)
-    prob = supp.get_solution()
-    prob
+    prob, X, Y = supp.get_network()
+    print(prob)
+    print(X)
     
-    X = []
-    Y = []
-    for v in prob.variables():
-        if v.name[0] == 'X':
-            X.append(v.varValue)
-        else:
-            Y.append(v.varValue)
-            
-    X = np.reshape(np.array(X), (S.shape[0], D.shape[0]))
-    Y = np.array(Y)
-    X
